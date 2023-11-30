@@ -1,9 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prismadb";
-import { match } from "@/lib/encryption";
 
 const authOptions: NextAuthOptions = {
   /* pages: {
@@ -25,46 +23,6 @@ const authOptions: NextAuthOptions = {
           access_type: "offline",
           response_type: "code",
         },
-      },
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "email@exemple.com",
-        },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials, req) {
-        if (!credentials?.email || !credentials?.password) return null;
-
-        const userExists = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-          select: {
-            id: true,
-            email: true,
-            profile: true,
-          },
-        });
-
-        if (!userExists) return null;
-
-        const passwordMatch = await match(
-          credentials.password,
-          userExists.password
-        );
-
-        if (!passwordMatch) return null;
-
-        return {
-          id: userExists.id,
-          email: userExists.email,
-          profile: userExists.profile,
-        };
       },
     }),
   ],
