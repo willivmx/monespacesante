@@ -1,113 +1,133 @@
-import Image from 'next/image'
+"use client";
+import authOptions from "@/lib/authOptions";
+import { signIn, useSession } from "next-auth/react";
+import Image from "next/image";
+import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 
 export default function Home() {
+  const { data, status } = useSession();
+  const session = data?.user;
+  const authenticated = status === "authenticated"
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="w-full h-screen flex justify-center items-center bg-foreground">
+      <div className="flex flex-col justify-center items-center gap-3 p-8 rounded-2xl cursor-pointer bg-white">
+        <div className="flex justify-center items-center gap-6 p-8">
+          {session ? (
+            <>
+              <Image
+                src={session?.image as string}
+                height={60}
+                width={60}
+                alt="Avatar"
+                className="rounded-full"
+              />{" "}
+              <div className="flex flex-col">
+                <span className="font-extrabold text-xl">{session?.name}</span>
+                <span className="text-md">{session?.email}</span>
+              </div>
+              <div
+                className="bg-destructive/40 h-[40px] w-[40px] flex justify-center items-center rounded-lg"
+                onClick={() => {
+                  signOut();
+                }}
+              >
+                <LogOut className="text-destructive" />
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="h-[60px] w-[60px] bg-primary/30 rounded-full animate-pulse">
+                {" "}
+              </span>
+              <div className="flex flex-col gap-3">
+                <span className="w-[300px] h-[15px] bg-primary/30 rounded-lg animate-pulse"></span>
+                <span className="w-[250px] h-[10px] bg-primary/30 rounded-lg animate-pulse"></span>
+              </div>
+            </>
+          )}
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        {!authenticated && (
+          <div className="bg-foreground hover:bg-foreground/95 h-[50px] w-[80%] flex justify-center items-center gap-3 rounded-lg text-white" onClick={() => signIn("google")}>
+            <svg
+              id="Capa_1"
+              height={"40px"}
+              version="1.1"
+              viewBox="0 0 150 150"
+              xmlSpace="preserve"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+            >
+              <style type="text/css">
+                {`
+          .st0{fill:#1A73E8;}
+          .st1{fill:#EA4335;}
+          .st2{fill:#4285F4;}
+          .st3{fill:#FBBC04;}
+          .st4{fill:#34A853;}
+          .st5{fill:#4CAF50;}
+          .st6{fill:#1E88E5;}
+          .st7{fill:#E53935;}
+          .st8{fill:#C62828;}
+          .st9{fill:#FBC02D;}
+          .st10{fill:#1565C0;}
+          .st11{fill:#2E7D32;}
+          .st12{fill:#F6B704;}
+          .st13{fill:#E54335;}
+          .st14{fill:#4280EF;}
+          .st15{fill:#34A353;}
+          .st16{clipPath:url(#SVGID_2_);}
+          .st17{fill:#188038;}
+          .st18{opacity:0.2;fill:#FFFFFF;enableBackground:new;}
+          .st19{opacity:0.3;fill:#0D652D;enableBackground:new;}
+          .st20{clipPath:url(#SVGID_4_);}
+          .st21{opacity:0.3;fill:url(#_45_shadow_1_);enableBackground:new;}
+          .st22{clipPath:url(#SVGID_6_);}
+          .st23{fill:#FA7B17;}
+          .st24{opacity:0.3;fill:#174EA6;enableBackground:new;}
+          .st25{opacity:0.3;fill:#A50E0E;enableBackground:new;}
+          .st26{opacity:0.3;fill:#E37400;enableBackground:new;}
+          .st27{fill:url(#Finish_mask_1_);}
+          .st28{fill:#FFFFFF;}
+          .st29{fill:#0C9D58;}
+          .st30{opacity:0.2;fill:#004D40;enableBackground:new;}
+          .st31{opacity:0.2;fill:#3E2723;enableBackground:new;}
+          .st32{fill:#FFC107;}
+          .st33{opacity:0.2;fill:#1A237E;enableBackground:new;}
+          .st34{opacity:0.2;}
+          .st35{fill:#1A237E;}
+          .st36{fill:url(#SVGID_7_);}
+          .st37{fill:#FBBC05;}
+          .st38{clipPath:url(#SVGID_9_);fill:#E53935;}
+          .st39{clipPath:url(#SVGID_11_);fill:#FBC02D;}
+          .st40{clipPath:url(#SVGID_13_);fill:#E53935;}
+          .st41{clipPath:url(#SVGID_15_);fill:#FBC02D;}
+        `}
+              </style>
+              <g>
+                <path
+                  className="st14"
+                  d="M120,76.1c0-3.1-0.3-6.3-0.8-9.3H75.9v17.7h24.8c-1,5.7-4.3,10.7-9.2,13.9l14.8,11.5C115,101.8,120,90,120,76.1L120,76.1z"
+                />
+                <path
+                  className="st15"
+                  d="M75.9,120.9c12.4,0,22.8-4.1,30.4-11.1L91.5,98.4c-4.1,2.8-9.4,4.4-15.6,4.4c-12,0-22.1-8.1-25.8-18.9L34.9,95.6C42.7,111.1,58.5,120.9,75.9,120.9z"
+                />
+                <path
+                  className="st12"
+                  d="M50.1,83.8c-1.9-5.7-1.9-11.9,0-17.6L34.9,54.4c-6.5,13-6.5,28.3,0,41.2L50.1,83.8z"
+                />
+                <path
+                  className="st13"
+                  d="M75.9,47.3c6.5-0.1,12.9,2.4,17.6,6.9L106.6,41C98.3,33.2,87.3,29,75.9,29.1c-17.4,0-33.2,9.8-41,25.3l15.2,11.8C53.8,55.3,63.9,47.3,75.9,47.3z"
+                />
+              </g>
+            </svg>{" "}
+            Se connecter avec google
+          </div>
+        )}
       </div>
     </main>
-  )
+  );
 }
